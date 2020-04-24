@@ -16,7 +16,21 @@ const connection_1 = __importDefault(require("../database/connection"));
 exports.default = {
     index(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const incidents = yield connection_1.default('incidents').select('*');
+            const { page = 1 } = req.query;
+            const [count] = yield connection_1.default('incidents').count();
+            const incidents = yield connection_1.default('incidents')
+                .join('ongs', 'ongs.id', '=', 'incidents.ong_id')
+                .limit(5)
+                .offset((page - 1) * 5)
+                .select([
+                'incidents.*',
+                'ongs.name',
+                'ongs.email',
+                'ongs.whatsapp',
+                'ongs.city',
+                'ongs.uf',
+            ]);
+            res.header('X-Total-Count', count['count(*)']);
             return res.json(incidents);
         });
     },
@@ -46,9 +60,7 @@ exports.default = {
                 console.log(ong_id);
                 return res.status(401).json({ error: 'Operation not permitted' });
             }
-            yield connection_1.default('incidents')
-                .where('id', id)
-                .delete();
+            yield connection_1.default('incidents').where('id', id).delete();
             return res.status(204).send();
         });
     },

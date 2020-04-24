@@ -14,14 +14,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const connection_1 = __importDefault(require("../database/connection"));
 exports.default = {
-    index(request, response) {
+    create(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const ong_id = request.headers.authorization;
-            const incidents = yield connection_1.default('incidents')
-                .where('ong_id', ong_id)
-                .select('*');
-            return response.json(incidents);
+            const { id } = request.body;
+            const ong = yield connection_1.default('ongs').where('id', id).select('name').first();
+            if (!ong) {
+                return response.status(400).json({ error: 'No ONG found with this ID' });
+            }
+            return response.json(ong);
         });
     },
 };
-//# sourceMappingURL=profileController.js.map
+//# sourceMappingURL=sessionController.js.map

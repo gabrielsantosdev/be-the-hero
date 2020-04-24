@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const ongController_1 = __importDefault(require("./controllers/ongController"));
 const incidentController_1 = __importDefault(require("./controllers/incidentController"));
 const profileController_1 = __importDefault(require("./controllers/profileController"));
+const sessionController_1 = __importDefault(require("./controllers/sessionController"));
 const routes = express_1.default.Router();
 /**
  *  Rota / Recurso
@@ -31,6 +32,7 @@ const routes = express_1.default.Router();
  */
 routes.get('/ongs', ongController_1.default.index);
 routes.post('/ongs', ongController_1.default.create);
+routes.post('/sessions', sessionController_1.default.create);
 routes.get('/profile', profileController_1.default.index);
 routes.post('/incidents', incidentController_1.default.create);
 routes.get('/incidents', incidentController_1.default.index);
